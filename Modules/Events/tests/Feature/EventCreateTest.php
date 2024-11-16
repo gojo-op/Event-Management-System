@@ -1,27 +1,17 @@
 <?php
 
-use Illuminate\Foundation\Testing\DatabaseTransactions;
-use App\Models\User;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Response;
-use App\Enums\UserRole;
 use Modules\Events\Models\Event;
 
 uses(Tests\TestCase::class);
-uses(DatabaseTransactions::class);
 
 it('creates an event successfully for an authenticated user (ORGANIZER) with correct data', function () {
-
-    $user = User::factory()->create([
-        'role' => UserRole::ORGANIZER,
-    ]);
-    Auth::login($user);
+    asOrganizer();
 
     $eventData = [
         'title' => 'Test Event',
         'event_date' => now()->addDays(5)->toDateString(),
         'location' => 'Test Location',
-        'user_id' => $user->id,
         'description' => 'test event',
         'ticket_types' => [
             ['name' => 'VIP', 'price' => 100, 'quantity' => 50],
@@ -41,7 +31,6 @@ it('creates an event successfully for an authenticated user (ORGANIZER) with cor
         'title' => 'Test Event',
         'location' => 'Test Location',
         'event_date' => $eventData['event_date'],
-        'user_id' => $user->id,
     ]);
 
     $event = Event::where('title', 'Test Event')->first();
@@ -63,15 +52,11 @@ it('creates an event successfully for an authenticated user (ORGANIZER) with cor
 });
 
 it('returns a validation error if required fields are missing', function () {
-    $user = User::factory()->create([
-        'role' => UserRole::ORGANIZER,
-    ]);
-    Auth::login($user);
+    asOrganizer();
 
     // Missing some field
     $eventData = [
         'location' => 'Test Location',
-        'user_id' => $user->id,
         'ticket_types' => [
             ['name' => 'VIP', 'price' => 100, 'quantity' => 50],
             ['name' => 'Regular', 'price' => 50, 'quantity' => 100],
@@ -85,16 +70,12 @@ it('returns a validation error if required fields are missing', function () {
 });
 
 it('returns an unauthorized error if the user is not authorized to create events', function () {
-    $user = User::factory()->create([
-        'role' => UserRole::ATTENDEE,
-    ]);
-    Auth::login($user);
+    asAttendee();
 
     $eventData = [
         'title' => 'Test Event',
         'event_date' => now()->addDays(5)->toDateString(),
         'location' => 'Test Location',
-        'user_id' => $user->id,
         'description' => 'test event',
         'ticket_types' => [
             ['name' => 'VIP', 'price' => 100, 'quantity' => 50],
