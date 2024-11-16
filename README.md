@@ -178,6 +178,7 @@ The Event Management System is designed to enable users to create, manage, and p
   To populate the database with dummy data for testing events and users, run the following command:
   ```bash
   php artisan migrate:fresh --seed
+  php artisan module:seed
   ```
 
 ---
