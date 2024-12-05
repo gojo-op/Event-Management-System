@@ -201,4 +201,4 @@ The Event Management System is designed to enable users to create, manage, and p
 
 ## Authors
 
-- [@vikaskumar-e1256](https://www.github.com/vikaskumar-e1256)
+- [@vikaskumar-e1256](https://www.github.com/vikask0101)
